@@ -26,6 +26,7 @@ public class RegController {
     public void setResultTryToReg(String command) {
         if (command.equals(Command.REG_OK)) {
             textArea.appendText("Регистрация прошла успешно\n");
+
         }
         if (command.equals(Command.REG_NO)) {
             textArea.appendText("Логин или никнейм уже заняты\n");
