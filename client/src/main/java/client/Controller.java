@@ -23,6 +23,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -107,14 +108,15 @@ public class Controller implements Initializable {
                                 String[] token = str.split("\\s");
                                 nickname = token[1];
                                 setAuthenticated(true);
+                                showLastMessages(100);
                                 break;
                             }
 
-                            if(str.equals(Command.REG_OK)){
+                            if (str.equals(Command.REG_OK)) {
                                 regController.setResultTryToReg(Command.REG_OK);
                             }
 
-                            if(str.equals(Command.REG_NO)){
+                            if (str.equals(Command.REG_NO)) {
                                 regController.setResultTryToReg(Command.REG_NO);
                             }
                         } else {
@@ -149,6 +151,8 @@ public class Controller implements Initializable {
 
                         } else {
                             textArea.appendText(str + "\n");
+                            History.Add(nickname, str);
+
                         }
                     }
                 } catch (RuntimeException e) {
@@ -238,7 +242,7 @@ public class Controller implements Initializable {
         }
     }
 
-    public void registration(String login, String password, String nickname){
+    public void registration(String login, String password, String nickname) {
         if (socket == null || socket.isClosed()) {
             connect();
         }
@@ -247,5 +251,28 @@ public class Controller implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void showLastMessages(int countMessages) throws IOException {
+        List<String> HistMessage = History.showHistory(nickname);
+        if (HistMessage.size() <= countMessages) {
+            for (String message : HistMessage) {
+
+                {
+
+                    textArea.appendText(message + "\n");
+
+                }
+            }
+        } else {
+
+            String[] messagesArray = HistMessage.toArray(new String[0]);
+            int startPos = messagesArray.length - countMessages;
+            for (int i = startPos; i < messagesArray.length; i++) {
+                textArea.appendText(messagesArray[i] + "\n");
+
+            }
+        }
+
     }
 }
